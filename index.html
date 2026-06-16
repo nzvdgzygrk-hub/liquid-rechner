@@ -13,13 +13,17 @@
   <style>
     :root {
       --bg: #0f172a;
-      --card: rgba(255, 255, 255, 0.96);
+      --card: rgba(255, 255, 255, 0.97);
       --muted: #64748b;
       --text: #0f172a;
       --primary: #2563eb;
+      --primary-soft: #dbeafe;
       --line: #e2e8f0;
       --soft: #f8fafc;
       --shadow: 0 20px 50px rgba(2, 6, 23, 0.24);
+      --base: #a7f3d0;
+      --shots: #f9a8d4;
+      --aroma: #c4b5fd;
     }
 
     * { box-sizing: border-box; }
@@ -30,8 +34,8 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.45), transparent 34rem),
-        radial-gradient(circle at bottom right, rgba(22, 163, 74, 0.32), transparent 28rem),
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.42), transparent 34rem),
+        radial-gradient(circle at bottom right, rgba(22, 163, 74, 0.28), transparent 28rem),
         var(--bg);
       padding: 18px;
     }
@@ -76,7 +80,7 @@
 
     .subtitle {
       margin: 0;
-      max-width: 700px;
+      max-width: 740px;
       color: rgba(255,255,255,0.78);
       line-height: 1.45;
       font-size: 16px;
@@ -84,7 +88,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(310px, 0.82fr);
+      grid-template-columns: minmax(0, 1fr) minmax(310px, 0.86fr);
       gap: 18px;
       align-items: start;
     }
@@ -129,7 +133,7 @@
 
     label {
       display: block;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
       margin-bottom: 7px;
     }
@@ -158,6 +162,33 @@
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
     }
 
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 16px;
+      background: #eef2ff;
+      border: 1px solid #dbeafe;
+    }
+
+    .mode-btn {
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #475569;
+      font-weight: 900;
+      padding: 12px 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .mode-btn.active {
+      background: white;
+      color: #1d4ed8;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.16);
+    }
+
     .quick-buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -165,18 +196,26 @@
       margin-top: 8px;
     }
 
-    button {
+    button.quick {
       border: 0;
       border-radius: 12px;
-      background: #e0ecff;
+      background: var(--primary-soft);
       color: #1e40af;
-      font-weight: 800;
+      font-weight: 900;
       padding: 10px 8px;
       cursor: pointer;
       font-size: 14px;
     }
 
     button:active { transform: translateY(1px); }
+
+    .mode-area {
+      display: none;
+    }
+
+    .mode-area.show {
+      display: block;
+    }
 
     .summary {
       padding: 16px;
@@ -203,20 +242,20 @@
       gap: 8px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 8px;
     }
 
     .result-value {
       font-size: 28px;
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing: -0.5px;
     }
 
     .unit {
       font-size: 15px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       margin-left: 4px;
     }
 
@@ -245,7 +284,51 @@
     .mix-list li:last-child { border-bottom: 0; }
 
     .mix-name { color: var(--muted); }
-    .mix-value { font-weight: 900; text-align: right; }
+    .mix-value { font-weight: 950; text-align: right; }
+
+    .bottle-wrap {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      padding: 10px 0 2px;
+    }
+
+    .bottle {
+      width: min(220px, 72%);
+      height: 310px;
+      border: 3px solid #0f172a;
+      border-radius: 28px 28px 18px 18px;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      flex-direction: column-reverse;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.55), 0 18px 35px rgba(15, 23, 42, 0.12);
+    }
+
+    .segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      text-align: center;
+      font-weight: 950;
+      line-height: 1.2;
+      min-height: 30px;
+      transition: height 0.2s ease;
+    }
+
+    .segment.aroma { background: var(--aroma); }
+    .segment.shots { background: var(--shots); }
+    .segment.base { background: var(--base); }
+    .segment.empty { background: #f1f5f9; color: #94a3b8; }
+
+    .bottle-caption {
+      text-align: center;
+      color: #334155;
+      font-weight: 950;
+      font-size: 16px;
+      line-height: 1.35;
+    }
 
     .notice {
       padding: 13px 14px;
@@ -273,7 +356,9 @@
       .row { grid-template-columns: 1fr; }
       .split { grid-template-columns: 1fr; }
       .quick-buttons { grid-template-columns: repeat(2, 1fr); }
+      .mode-switch { grid-template-columns: 1fr; }
       .panel { border-radius: 20px; }
+      .bottle { height: 280px; }
     }
   </style>
 </head>
@@ -282,20 +367,28 @@
     <header>
       <div class="topline">
         <span class="badge">🧪 Liquid Rechner</span>
-        <span class="badge">Rechnung: 10-ml-Shot = 20 mg gesamt</span>
+        <span class="badge">20 mg/ml · 10 ml Shot = 200 mg</span>
       </div>
       <h1>Liquid Rechner</h1>
-      <p class="subtitle">Aroma, Flaschengröße und Shots eintragen. Aroma und Base haben hier 0 mg Nikotin; nur die Shots zählen.</p>
+      <p class="subtitle">Du kannst entweder deine Anzahl Shots eingeben oder eine gewünschte Nikotinstärke berechnen lassen. Aroma und Base haben 0 mg Nikotin.</p>
     </header>
 
     <main class="grid">
       <section class="panel">
         <div class="panel-head">
           <h2>Eingaben</h2>
-          <p>Aroma und Shots werden vom Flaschenvolumen abgezogen. Der Rest ist Base.</p>
+          <p>Umschalter wählen: vorhandene Shots berechnen oder benötigte Shots für eine Zielstärke ausrechnen.</p>
         </div>
 
         <div class="form">
+          <div>
+            <label>Berechnungsmodus</label>
+            <div class="mode-switch">
+              <button type="button" class="mode-btn active" data-mode="shots">Anzahl Shots eingeben</button>
+              <button type="button" class="mode-btn" data-mode="target">Zielstärke berechnen</button>
+            </div>
+          </div>
+
           <div>
             <label for="bottleMl">Flaschengröße</label>
             <input id="bottleMl" type="number" inputmode="decimal" min="1" step="1" value="75" />
@@ -318,26 +411,33 @@
 
           <div class="row">
             <div>
-              <label for="shotCount">Anzahl Shots</label>
-              <input id="shotCount" type="number" inputmode="decimal" min="0" step="0.5" value="3" />
-              <div class="quick-buttons" aria-label="Shot Schnellwahl">
-                <button type="button" data-shots="0">0</button>
-                <button type="button" data-shots="1">1</button>
-                <button type="button" data-shots="2">2</button>
-                <button type="button" data-shots="3">3</button>
-              </div>
-            </div>
-            <div>
               <label for="shotSizeMl">Shot-Größe</label>
               <input id="shotSizeMl" type="number" inputmode="decimal" min="0" step="0.1" value="10" />
-              <span class="hint">Standard: 10 ml pro Shot. Wird nur für die ml-Menge gerechnet.</span>
+              <span class="hint">Standard: 10 ml pro Shot.</span>
+            </div>
+            <div>
+              <label for="shotStrengthMgMl">Shot-Stärke</label>
+              <input id="shotStrengthMgMl" type="number" inputmode="decimal" min="0" step="0.1" value="20" />
+              <span class="hint">Standard: 20 mg/ml. Also 200 mg pro 10-ml-Shot.</span>
             </div>
           </div>
 
-          <div>
-            <label for="nicotinePerShot">Nikotin pro Shot</label>
-            <input id="nicotinePerShot" type="number" inputmode="decimal" min="0" step="0.1" value="20" />
-            <span class="hint">Nach deiner Vorgabe: Ein 10-ml-Shot enthält insgesamt 20 mg Nikotin.</span>
+          <div id="shotsModeArea" class="mode-area show">
+            <label for="shotCount">Anzahl Shots</label>
+            <input id="shotCount" type="number" inputmode="decimal" min="0" step="0.1" value="3" />
+            <div class="quick-buttons" aria-label="Shot Schnellwahl">
+              <button class="quick" type="button" data-shots="0">0</button>
+              <button class="quick" type="button" data-shots="1">1</button>
+              <button class="quick" type="button" data-shots="2">2</button>
+              <button class="quick" type="button" data-shots="3">3</button>
+            </div>
+            <span class="hint">Beispiel: 3 Shots à 10 ml mit 20 mg/ml = 600 mg Nikotin gesamt.</span>
+          </div>
+
+          <div id="targetModeArea" class="mode-area">
+            <label for="targetStrengthMgMl">Gewünschte Nikotinstärke</label>
+            <input id="targetStrengthMgMl" type="number" inputmode="decimal" min="0" step="0.1" value="9" />
+            <span class="hint">Beispiel: 9 mg/ml in 75 ml braucht 675 mg Nikotin gesamt.</span>
           </div>
         </div>
       </section>
@@ -345,7 +445,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2>Ergebnis</h2>
-          <p>Werte werden automatisch neu berechnet.</p>
+          <p>Die Flaschengrafik zeigt Aroma, Nikotinshot und Base.</p>
         </div>
 
         <div class="summary">
@@ -358,8 +458,8 @@
 
           <div class="split">
             <div class="result-card">
-              <div class="result-title">Nikotin gesamt</div>
-              <div class="result-value"><span id="nicotineTotal">0</span><span class="unit">mg</span></div>
+              <div class="result-title">Benötigte Shots</div>
+              <div class="result-value"><span id="neededShots">0</span><span class="unit">Shots</span></div>
             </div>
             <div class="result-card">
               <div class="result-title">Base benötigt</div>
@@ -377,8 +477,20 @@
             </ul>
           </div>
 
-          <div class="notice warn">Hinweis: Nikotinwerte sorgfältig prüfen. Dieser Rechner nutzt jetzt: Nikotin gesamt = Anzahl Shots × Nikotin pro Shot.</div>
-          <div class="notice info">Beispiel mit 75 ml, 15 ml Aroma, 3 Shots à 10 ml und 20 mg pro Shot: 60 mg gesamt ÷ 75 ml = 0,8 mg/ml. Base: 30 ml.</div>
+          <div class="result-card">
+            <div class="result-title">Flaschengrafik</div>
+            <div class="bottle-wrap">
+              <div class="bottle" aria-label="Flaschengrafik">
+                <div id="aromaSegment" class="segment aroma">Aroma</div>
+                <div id="shotsSegment" class="segment shots">Shots</div>
+                <div id="baseSegment" class="segment base">Base</div>
+              </div>
+              <div class="bottle-caption" id="bottleCaption">0 ml Gesamt</div>
+            </div>
+          </div>
+
+          <div class="notice warn">Normale Angabe bei Nikotinshots: 20 mg/ml bedeutet 20 mg pro ml. Ein 10-ml-Shot enthält dadurch 200 mg Nikotin.</div>
+          <div class="notice info" id="formulaText">Formel wird hier angezeigt.</div>
         </div>
       </section>
     </main>
@@ -387,8 +499,9 @@
   </div>
 
   <script>
-    const ids = ["bottleMl", "aromaMode", "aromaValue", "shotCount", "shotSizeMl", "nicotinePerShot"];
-    const storageKey = "liquid-rechner-v2-per-shot";
+    const ids = ["bottleMl", "aromaMode", "aromaValue", "shotCount", "shotSizeMl", "shotStrengthMgMl", "targetStrengthMgMl"];
+    const storageKey = "liquid-rechner-v3-mode-switch";
+    let currentMode = "shots";
 
     const $ = (id) => document.getElementById(id);
 
@@ -408,7 +521,7 @@
     }
 
     function save() {
-      const data = {};
+      const data = { currentMode };
       ids.forEach(id => data[id] = $(id).value);
       localStorage.setItem(storageKey, JSON.stringify(data));
     }
@@ -419,23 +532,63 @@
         ids.forEach(id => {
           if (data[id] !== undefined) $(id).value = data[id];
         });
+        if (data.currentMode === "shots" || data.currentMode === "target") {
+          currentMode = data.currentMode;
+        }
       } catch (error) {
         console.warn("Gespeicherte Werte konnten nicht geladen werden.", error);
       }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll(".mode-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+      });
+      $("shotsModeArea").classList.toggle("show", mode === "shots");
+      $("targetModeArea").classList.toggle("show", mode === "target");
+      calculate();
+    }
+
+    function setSegment(id, ml, bottleMl, label) {
+      const el = $(id);
+      const safeMl = Math.max(0, ml);
+      const percent = bottleMl > 0 ? Math.max(0, safeMl / bottleMl * 100) : 0;
+      el.style.height = percent + "%";
+      el.textContent = safeMl > 0 ? `${round(safeMl)} ml ${label}` : "";
+      el.style.display = safeMl > 0 ? "flex" : "none";
     }
 
     function calculate() {
       const bottleMl = Math.max(0, toNumber("bottleMl"));
       const aromaInput = Math.max(0, toNumber("aromaValue"));
       const aromaMode = $("aromaMode").value;
-      const shotCount = Math.max(0, toNumber("shotCount"));
+      const shotCountInput = Math.max(0, toNumber("shotCount"));
       const shotSizeMl = Math.max(0, toNumber("shotSizeMl"));
-      const nicotinePerShotMg = Math.max(0, toNumber("nicotinePerShot"));
+      const shotStrengthMgMl = Math.max(0, toNumber("shotStrengthMgMl"));
+      const targetStrengthMgMl = Math.max(0, toNumber("targetStrengthMgMl"));
 
       const aromaMl = aromaMode === "percent" ? bottleMl * aromaInput / 100 : aromaInput;
-      const shotsMl = shotCount * shotSizeMl;
-      const nicotineTotalMg = shotCount * nicotinePerShotMg;
-      const nicotineStrengthMgMl = bottleMl > 0 ? nicotineTotalMg / bottleMl : 0;
+      let shotsMl = 0;
+      let neededShots = 0;
+      let nicotineTotalMg = 0;
+      let nicotineStrengthMgMl = 0;
+      let formula = "";
+
+      if (currentMode === "shots") {
+        neededShots = shotCountInput;
+        shotsMl = shotCountInput * shotSizeMl;
+        nicotineTotalMg = shotsMl * shotStrengthMgMl;
+        nicotineStrengthMgMl = bottleMl > 0 ? nicotineTotalMg / bottleMl : 0;
+        formula = `${round(shotsMl)} ml Shots × ${round(shotStrengthMgMl)} mg/ml = ${round(nicotineTotalMg)} mg. ${round(nicotineTotalMg)} mg ÷ ${round(bottleMl)} ml = ${round(nicotineStrengthMgMl, 2)} mg/ml.`;
+      } else {
+        nicotineStrengthMgMl = targetStrengthMgMl;
+        nicotineTotalMg = bottleMl * targetStrengthMgMl;
+        shotsMl = shotStrengthMgMl > 0 ? nicotineTotalMg / shotStrengthMgMl : 0;
+        neededShots = shotSizeMl > 0 ? shotsMl / shotSizeMl : 0;
+        formula = `${round(bottleMl)} ml × ${round(targetStrengthMgMl, 2)} mg/ml = ${round(nicotineTotalMg)} mg. ${round(nicotineTotalMg)} mg ÷ ${round(shotStrengthMgMl)} mg/ml = ${round(shotsMl)} ml Shots.`;
+      }
+
       const baseMl = bottleMl - aromaMl - shotsMl;
       const filledMl = aromaMl + shotsMl + Math.max(0, baseMl);
 
@@ -446,15 +599,27 @@
       $("totalMl").textContent = round(filledMl);
       $("shotsNicotineMg").textContent = round(nicotineTotalMg);
       $("totalNicotineMg").textContent = round(nicotineTotalMg);
-      $("nicotineTotal").textContent = round(nicotineTotalMg);
+      $("neededShots").textContent = round(neededShots, 2);
       $("nicotineStrength").textContent = round(nicotineStrengthMgMl, 2);
+      $("formulaText").textContent = formula;
+      $("bottleCaption").textContent = `${round(filledMl)} ml von ${round(bottleMl)} ml gefüllt`;
+
+      setSegment("aromaSegment", aromaMl, bottleMl, "Aroma");
+      setSegment("shotsSegment", shotsMl, bottleMl, "Shots");
+      setSegment("baseSegment", baseMl, bottleMl, "Base");
 
       const errorBox = $("errorBox");
       if (bottleMl <= 0) {
         errorBox.textContent = "Bitte eine Flaschengröße größer als 0 ml eingeben.";
         errorBox.classList.add("show");
+      } else if (shotStrengthMgMl <= 0) {
+        errorBox.textContent = "Bitte eine Shot-Stärke größer als 0 mg/ml eingeben.";
+        errorBox.classList.add("show");
+      } else if (shotSizeMl <= 0) {
+        errorBox.textContent = "Bitte eine Shot-Größe größer als 0 ml eingeben.";
+        errorBox.classList.add("show");
       } else if (baseMl < 0) {
-        errorBox.textContent = "Aroma und Shots sind zusammen größer als die Flasche. Bitte Eingaben prüfen.";
+        errorBox.textContent = "Aroma und Shots sind zusammen größer als die Flasche. Zielstärke oder Shot-Anzahl ist zu hoch.";
         errorBox.classList.add("show");
       } else {
         errorBox.textContent = "";
@@ -464,10 +629,14 @@
       save();
     }
 
+    document.querySelectorAll(".mode-btn").forEach(button => {
+      button.addEventListener("click", () => setMode(button.dataset.mode));
+    });
+
     document.querySelectorAll("button[data-shots]").forEach(button => {
       button.addEventListener("click", () => {
         $("shotCount").value = button.dataset.shots;
-        calculate();
+        setMode("shots");
       });
     });
 
@@ -477,7 +646,7 @@
     });
 
     load();
-    calculate();
+    setMode(currentMode);
   </script>
 </body>
 </html>
