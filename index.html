@@ -17,10 +17,6 @@
       --muted: #64748b;
       --text: #0f172a;
       --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --green: #16a34a;
-      --red: #dc2626;
-      --orange: #f59e0b;
       --line: #e2e8f0;
       --soft: #f8fafc;
       --shadow: 0 20px 50px rgba(2, 6, 23, 0.24);
@@ -252,7 +248,6 @@
     .mix-value { font-weight: 900; text-align: right; }
 
     .notice {
-      display: none;
       padding: 13px 14px;
       border-radius: 16px;
       line-height: 1.42;
@@ -260,10 +255,10 @@
       border: 1px solid transparent;
     }
 
-    .notice.show { display: block; }
-    .notice.error { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+    .notice.error { display: none; background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+    .notice.error.show { display: block; }
     .notice.warn { background: #fffbeb; border-color: #fde68a; color: #92400e; }
-    .notice.info { display: block; background: #f8fafc; border-color: #e2e8f0; color: #475569; }
+    .notice.info { background: #f8fafc; border-color: #e2e8f0; color: #475569; }
 
     footer {
       color: rgba(255,255,255,0.62);
@@ -287,23 +282,23 @@
     <header>
       <div class="topline">
         <span class="badge">🧪 Liquid Rechner</span>
-        <span class="badge">20 mg/ml · 10 ml Shot voreingestellt</span>
+        <span class="badge">Rechnung: 10-ml-Shot = 20 mg gesamt</span>
       </div>
       <h1>Liquid Rechner</h1>
-      <p class="subtitle">Aroma, Flaschengröße und Nikotinshots eintragen. Die App berechnet Base-Menge, Gesamt-Nikotin und die fertige Nikotinstärke.</p>
+      <p class="subtitle">Aroma, Flaschengröße und Shots eintragen. Aroma und Base haben hier 0 mg Nikotin; nur die Shots zählen.</p>
     </header>
 
     <main class="grid">
       <section class="panel">
         <div class="panel-head">
           <h2>Eingaben</h2>
-          <p>Die Aroma- und Shot-Menge werden vom Flaschenvolumen abgezogen. Der Rest ist Base.</p>
+          <p>Aroma und Shots werden vom Flaschenvolumen abgezogen. Der Rest ist Base.</p>
         </div>
 
         <div class="form">
           <div>
             <label for="bottleMl">Flaschengröße</label>
-            <input id="bottleMl" type="number" inputmode="decimal" min="1" step="1" value="120" />
+            <input id="bottleMl" type="number" inputmode="decimal" min="1" step="1" value="75" />
             <span class="hint">Gesamtes Fassungsvermögen der fertigen Flasche in ml.</span>
           </div>
 
@@ -317,14 +312,14 @@
             </div>
             <div>
               <label for="aromaValue">Aroma-Menge</label>
-              <input id="aromaValue" type="number" inputmode="decimal" min="0" step="0.1" value="12" />
+              <input id="aromaValue" type="number" inputmode="decimal" min="0" step="0.1" value="15" />
             </div>
           </div>
 
           <div class="row">
             <div>
               <label for="shotCount">Anzahl Shots</label>
-              <input id="shotCount" type="number" inputmode="decimal" min="0" step="0.5" value="2" />
+              <input id="shotCount" type="number" inputmode="decimal" min="0" step="0.5" value="3" />
               <div class="quick-buttons" aria-label="Shot Schnellwahl">
                 <button type="button" data-shots="0">0</button>
                 <button type="button" data-shots="1">1</button>
@@ -335,14 +330,14 @@
             <div>
               <label for="shotSizeMl">Shot-Größe</label>
               <input id="shotSizeMl" type="number" inputmode="decimal" min="0" step="0.1" value="10" />
-              <span class="hint">Standard: 10 ml pro Shot.</span>
+              <span class="hint">Standard: 10 ml pro Shot. Wird nur für die ml-Menge gerechnet.</span>
             </div>
           </div>
 
           <div>
-            <label for="shotStrength">Shot-Stärke</label>
-            <input id="shotStrength" type="number" inputmode="decimal" min="0" step="0.1" value="20" />
-            <span class="hint">Standard: 20 mg/ml. Ein 10-ml-Shot enthält dann 200 mg Nikotin.</span>
+            <label for="nicotinePerShot">Nikotin pro Shot</label>
+            <input id="nicotinePerShot" type="number" inputmode="decimal" min="0" step="0.1" value="20" />
+            <span class="hint">Nach deiner Vorgabe: Ein 10-ml-Shot enthält insgesamt 20 mg Nikotin.</span>
           </div>
         </div>
       </section>
@@ -375,25 +370,25 @@
           <div class="result-card">
             <div class="result-title">Mischung</div>
             <ul class="mix-list">
-              <li><span class="mix-name">Aroma</span><span class="mix-value"><span id="aromaMl">0</span> ml</span></li>
-              <li><span class="mix-name">Nikotinshots</span><span class="mix-value"><span id="shotsMl">0</span> ml</span></li>
-              <li><span class="mix-name">Base</span><span class="mix-value"><span id="baseMlSmall">0</span> ml</span></li>
-              <li><span class="mix-name">Gesamt</span><span class="mix-value"><span id="totalMl">0</span> ml</span></li>
+              <li><span class="mix-name">Aroma</span><span class="mix-value"><span id="aromaMl">0</span> ml · 0 mg</span></li>
+              <li><span class="mix-name">Nikotinshots</span><span class="mix-value"><span id="shotsMl">0</span> ml · <span id="shotsNicotineMg">0</span> mg</span></li>
+              <li><span class="mix-name">Base</span><span class="mix-value"><span id="baseMlSmall">0</span> ml · 0 mg</span></li>
+              <li><span class="mix-name">Gesamt</span><span class="mix-value"><span id="totalMl">0</span> ml · <span id="totalNicotineMg">0</span> mg</span></li>
             </ul>
           </div>
 
-          <div class="notice warn show">Hinweis: Nikotin ist ein stark wirkender Stoff. Rechenwerte sorgfältig prüfen, sauber arbeiten und außerhalb der Reichweite von Kindern aufbewahren.</div>
-          <div class="notice info">Formel: Shots × Shot-Größe × Shot-Stärke = Nikotin gesamt. Nikotin gesamt ÷ Flaschengröße = fertige mg/ml.</div>
+          <div class="notice warn">Hinweis: Nikotinwerte sorgfältig prüfen. Dieser Rechner nutzt jetzt: Nikotin gesamt = Anzahl Shots × Nikotin pro Shot.</div>
+          <div class="notice info">Beispiel mit 75 ml, 15 ml Aroma, 3 Shots à 10 ml und 20 mg pro Shot: 60 mg gesamt ÷ 75 ml = 0,8 mg/ml. Base: 30 ml.</div>
         </div>
       </section>
     </main>
 
-    <footer>Programmiert von F. Kaplan · Rechenhilfe ohne medizinische Empfehlung</footer>
+    <footer>Programmiert von F. Kaplan · Rechenhilfe</footer>
   </div>
 
   <script>
-    const ids = ["bottleMl", "aromaMode", "aromaValue", "shotCount", "shotSizeMl", "shotStrength"];
-    const storageKey = "liquid-rechner-v1";
+    const ids = ["bottleMl", "aromaMode", "aromaValue", "shotCount", "shotSizeMl", "nicotinePerShot"];
+    const storageKey = "liquid-rechner-v2-per-shot";
 
     const $ = (id) => document.getElementById(id);
 
@@ -435,11 +430,11 @@
       const aromaMode = $("aromaMode").value;
       const shotCount = Math.max(0, toNumber("shotCount"));
       const shotSizeMl = Math.max(0, toNumber("shotSizeMl"));
-      const shotStrength = Math.max(0, toNumber("shotStrength"));
+      const nicotinePerShotMg = Math.max(0, toNumber("nicotinePerShot"));
 
       const aromaMl = aromaMode === "percent" ? bottleMl * aromaInput / 100 : aromaInput;
       const shotsMl = shotCount * shotSizeMl;
-      const nicotineTotalMg = shotCount * shotSizeMl * shotStrength;
+      const nicotineTotalMg = shotCount * nicotinePerShotMg;
       const nicotineStrengthMgMl = bottleMl > 0 ? nicotineTotalMg / bottleMl : 0;
       const baseMl = bottleMl - aromaMl - shotsMl;
       const filledMl = aromaMl + shotsMl + Math.max(0, baseMl);
@@ -449,6 +444,8 @@
       $("baseMl").textContent = round(baseMl);
       $("baseMlSmall").textContent = round(baseMl);
       $("totalMl").textContent = round(filledMl);
+      $("shotsNicotineMg").textContent = round(nicotineTotalMg);
+      $("totalNicotineMg").textContent = round(nicotineTotalMg);
       $("nicotineTotal").textContent = round(nicotineTotalMg);
       $("nicotineStrength").textContent = round(nicotineStrengthMgMl, 2);
 
